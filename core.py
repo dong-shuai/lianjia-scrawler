@@ -259,7 +259,7 @@ def get_community_perregion(regionname=u'xicheng'):
         nameList = soup.findAll("li", {"class":"clear"})
         i = 0
         log_progress("GetCommunityByRegionlist", regionname, page+1, total_pages)
-        data_source = []
+        #data_source = []
         for name in nameList: # Per house loop
             i = i + 1
             info_dict = {}
@@ -298,12 +298,14 @@ def get_community_perregion(regionname=u'xicheng'):
             except:
                 continue
             # communityinfo insert into mysql
-            data_source.append(info_dict)
-            #model.Community.insert(**info_dict).upsert().execute()
+            #data_source.append(info_dict)
+            model.Community.insert(**info_dict).upsert().execute()
 
-        with model.database.atomic():
-            model.Community.insert_many(data_source).upsert().execute()
-        time.sleep(1)
+            time.sleep(1)
+        logging.info("%s: current page %d total pages %d" %(regionname, page+1, total_pages))
+        #with model.database.atomic():
+        #    model.Community.insert_many(data_source).upsert().execute()
+        #time.sleep(1)
 
 def get_rent_percommunity(communityname):
     url = BASE_URL + u"zufang/rs" + urllib2.quote(communityname.encode('utf8')) + "/"
